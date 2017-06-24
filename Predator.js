@@ -1,21 +1,40 @@
-var Predator = (function () {
-  var carnivores = [];
+var Predator = (function (oldPred) {
+  let carnivores = Object.create(null);
 
-  return {
-    loadCarnivores: function (callbackToInvoke) {
-      var carnivoreLoader = new XMLHttpRequest();
+      carnivores.loadCarnivores = function (callbackToInvoke) {
+      var carnivoreLoader = new XMLHttpRequest();      
       carnivoreLoader.open("GET", "carnivores.json");
       carnivoreLoader.send();
 
       carnivoreLoader.addEventListener("load", function () {
-        // Set the value of the private array
-        carnivores = JSON.parse(this.responseText);
+        carnivores = JSON.parse(event.target.responseText);
         console.log("carnivores?", carnivores);
         callbackToInvoke(carnivores);
+      })
+    }
+    oldPred.Carnivores = carnivores;
+    return oldPred
+  }(Predator || {}));
 
-        // Invoke the callback function so that the caller knows that the process is complete. Make sure to pass the carnivore array as an argument.
 
+
+  Predator = (function (oldPred) {
+   let herbivores = Object.create(null);
+
+    herbivores.loadHerbivores = function (callbackToShow) {
+      var herbivoreLoader = new XMLHttpRequest();      
+      herbivoreLoader.open("GET", "herbivores.json");
+      herbivoreLoader.send();
+    
+      herbivoreLoader.addEventListener("load", function () {
+        herbivores = JSON.parse(event.target.responseText);
+        console.log("herbivores?", herbivores);
+        callbackToShow(herbivores);
       });
     }
-  }
-})();
+    oldPred.Herbivores= herbivores;
+    return oldPred;
+  }(Predator || {}));
+
+
+  //I changed the pattern to match the way we did IIFE patterns in class together, and did not use the pattern displayed in the startup code for this ex. I'd like to see how it would work with the boilerplate code we were given.
